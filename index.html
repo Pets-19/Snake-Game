@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>JavaScript Snake Game</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <h1>JavaScript Snake Game</h1>
+
+        <div id="scoreBoard">
+            <div>Score: <span id="score">0</span></div>
+            <div>High Score: <span id="highScore">0</span></div>
+        </div>
+
+        <div class="game-container">
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+            <div id="gameOverScreen">
+                <h2>Game Over!</h2>
+                <div id="finalScore">Score: 0</div>
+                <div id="highScoreMessage"></div>
+                <button id="restartBtn">Play Again</button>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <button id="startBtn">Start Game</button>
+            <button id="pauseBtn" disabled>Pause</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+
+        <div class="settings">
+            <h3>Game Settings</h3>
+            <div class="settings-group">
+                <label for="difficultySelect">Difficulty:</label>
+                <select id="difficultySelect">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                    <option value="extreme">Extreme</option>
+                </select>
+            </div>
+
+            <div class="settings-group">
+                <label for="speedSlider"
+                    >Game Speed:
+                    <span id="speedValue" class="speed-value">5</span></label
+                >
+                <input
+                    type="range"
+                    id="speedSlider"
+                    min="1"
+                    max="10"
+                    value="5"
+                />
+            </div>
+
+            <div class="settings-group">
+                <label>
+                    <input type="checkbox" id="wallCollision" checked />
+                    Wall Collision (Off = wrap around)
+                </label>
+            </div>
+
+            <div class="settings-group">
+                <label>
+                    <input type="checkbox" id="gridLines" />
+                    Show Grid Lines
+                </label>
+            </div>
+        </div>
+
+        <div class="mobile-controls">
+            <button class="mobile-btn up-btn" id="upBtn">↑</button>
+            <button class="mobile-btn left-btn" id="leftBtn">←</button>
+            <button class="mobile-btn right-btn" id="rightBtn">→</button>
+            <button class="mobile-btn down-btn" id="downBtn">↓</button>
+        </div>
+
+        <div class="controls-info">
+            <h3>Controls</h3>
+            <ul>
+                <li><strong>Arrow Keys</strong> - Control snake direction</li>
+                <li><strong>Space</strong> - Pause/Resume game</li>
+                <li><strong>R</strong> - Reset game</li>
+            </ul>
+        </div>
+        <script src="index.js"></script>
+    </body>
+</html>

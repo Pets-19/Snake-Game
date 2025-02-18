@@ -1,0 +1,739 @@
+:root {
+    /* Color Variables */
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --primary-light: #818cf8;
+    --accent: #10b981;
+    --accent-dark: #059669;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --dark: #1e293b;
+    --darker: #0f172a;
+    --light: #f8fafc;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+
+    /* Game Colors */
+    --snake-head: #10b981;
+    --snake-head-dark: #059669;
+    --snake-body: #34d399;
+    --food: #ef4444;
+    --food-shine: #fecaca;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+    /* Animations */
+    --transition-fast: all 0.2s ease;
+    --transition: all 0.3s ease;
+    --transition-slow: all 0.5s ease;
+
+    /* Borders */
+    --radius-sm: 0.25rem;
+    --radius: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-full: 9999px;
+}
+
+/* Reset & Base Styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--gray-800);
+    background: linear-gradient(
+        135deg,
+        var(--gray-50) 0%,
+        var(--gray-200) 100%
+    );
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* Typography */
+h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    text-align: center;
+    letter-spacing: -0.025em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+h1::after {
+    content: "";
+    position: absolute;
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3rem;
+    height: 0.25rem;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    border-radius: var(--radius-full);
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 1rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+h3::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, var(--gray-200), transparent);
+}
+
+/* Game Container */
+.game-container {
+    position: relative;
+    margin: 1.5rem 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--gray-200);
+    transition: var(--transition);
+}
+
+.game-container:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+#gameCanvas {
+    background-color: var(--darker);
+    display: block;
+    background-image: radial-gradient(
+            circle at 25px 25px,
+            rgba(255, 255, 255, 0.03) 2%,
+            transparent 0%
+        ),
+        radial-gradient(
+            circle at 75px 75px,
+            rgba(255, 255, 255, 0.02) 2%,
+            transparent 0%
+        );
+    background-size: 100px 100px;
+}
+
+/* Score Board */
+#scoreBoard {
+    display: flex;
+    justify-content: space-between;
+    width: 400px;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(to right, var(--primary-dark), var(--primary));
+    color: white;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+
+#scoreBoard::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--primary-light), transparent);
+    opacity: 0.7;
+}
+
+#score,
+#highScore {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+/* Game Controls */
+.game-controls {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: var(--transition);
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+button:disabled {
+    background-color: var(--gray-300);
+    color: var(--gray-500);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+#startBtn {
+    background-color: var(--accent);
+}
+
+#startBtn:hover {
+    background-color: var(--accent-dark);
+}
+
+#pauseBtn {
+    background-color: var(--primary);
+}
+
+#resetBtn {
+    background-color: var(--gray-600);
+}
+
+#resetBtn:hover {
+    background-color: var(--gray-700);
+}
+
+/* Game Over Screen */
+#gameOverScreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.95));
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--radius);
+    display: none;
+    animation: fadeIn 0.5s ease;
+    backdrop-filter: blur(4px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#gameOverScreen h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--danger);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: gameOverPulse 2s infinite;
+}
+
+@keyframes gameOverPulse {
+    0% {
+        text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+    }
+    100% {
+        text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+}
+
+#finalScore {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+#highScoreMessage {
+    color: var(--warning);
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+}
+
+#restartBtn {
+    background-color: var(--warning);
+    padding: 0.75rem 2rem;
+    font-size: 1.125rem;
+    border-radius: var(--radius);
+}
+
+#restartBtn:hover {
+    background-color: #d97706;
+}
+
+/* Settings Panel */
+.settings {
+    width: 400px;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    margin-top: 1.5rem;
+    border: 1px solid var(--gray-200);
+    position: relative;
+    overflow: hidden;
+}
+
+.settings::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+}
+
+.settings-group {
+    margin-bottom: 1.5rem;
+}
+
+.settings-group:last-child {
+    margin-bottom: 0;
+}
+
+.settings label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.settings select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-300);
+    font-size: 1rem;
+    color: var(--gray-700);
+    background-color: var(--gray-50);
+    transition: var(--transition-fast);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+}
+
+.settings select:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.settings input[type="range"] {
+    width: 100%;
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(to right, var(--primary-light), var(--primary));
+    appearance: none;
+    outline: none;
+    margin: 1rem 0;
+}
+
+.settings input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    border: 2px solid white;
+    transition: var(--transition-fast);
+}
+
+.settings input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    background: var(--primary-dark);
+}
+
+.settings input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    border: 2px solid white;
+    transition: var(--transition-fast);
+}
+
+.settings input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.15);
+    background: var(--primary-dark);
+}
+
+.speed-value {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    text-align: center;
+    font-weight: 700;
+    color: white;
+    background-color: var(--primary);
+    padding: 0.25rem;
+    border-radius: var(--radius-full);
+    margin-left: 0.5rem;
+    line-height: 1.5;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Checkbox Styles */
+.checkbox-label {
+    display: flex !important;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.settings input[type="checkbox"] {
+    appearance: none;
+    width: 50px;
+    height: 24px;
+    border-radius: var(--radius-full);
+    background-color: var(--gray-300);
+    position: relative;
+    cursor: pointer;
+    vertical-align: middle;
+    transition: var(--transition-fast);
+    margin-right: 1rem;
+}
+
+.settings input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    background-color: white;
+    transition: var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
+
+.settings input[type="checkbox"]:checked {
+    background-color: var(--accent);
+}
+
+.settings input[type="checkbox"]:checked::before {
+    transform: translateX(26px);
+}
+
+.settings input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+/* Controls Info Panel */
+.controls-info {
+    width: 400px;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    margin-top: 1.5rem;
+    border: 1px solid var(--gray-200);
+    position: relative;
+    overflow: hidden;
+}
+
+.controls-info::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, var(--accent), var(--primary));
+}
+
+.controls-info ul {
+    padding-left: 1.25rem;
+    list-style-type: none;
+}
+
+.controls-info li {
+    margin-bottom: 0.875rem;
+    color: var(--gray-600);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.controls-info li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.controls-info strong {
+    color: var(--gray-900);
+    background-color: var(--gray-100);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-family: "SF Mono", "Menlo", "Monaco", "Courier New", monospace;
+    font-size: 0.9rem;
+    margin-right: 0.25rem;
+    border: 1px solid var(--gray-200);
+}
+
+/* Mobile Controls */
+.mobile-controls {
+    display: none;
+    grid-template-columns: repeat(3, 70px);
+    grid-template-rows: repeat(3, 70px);
+    gap: 10px;
+    margin-top: 1.5rem;
+}
+
+.mobile-btn {
+    width: 70px;
+    height: 70px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.75rem;
+    color: var(--primary);
+    transition: var(--transition-fast);
+    box-shadow: var(--shadow);
+}
+
+.mobile-btn:active {
+    background-color: rgba(99, 102, 241, 0.2);
+    transform: scale(0.95);
+    box-shadow: var(--shadow-inner);
+}
+
+.up-btn {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.left-btn {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.right-btn {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.down-btn {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 500px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    #gameCanvas,
+    #scoreBoard,
+    .settings,
+    .controls-info {
+        width: 330px;
+    }
+
+    .game-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    button {
+        flex: 1 1 45%;
+        min-width: 100px;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .mobile-controls {
+        display: grid;
+    }
+
+    #gameOverScreen h2 {
+        font-size: 2rem;
+    }
+
+    .settings,
+    .controls-info {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 350px) {
+    #gameCanvas,
+    #scoreBoard,
+    .settings,
+    .controls-info {
+        width: 280px;
+    }
+
+    .game-controls {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h3 {
+        font-size: 1.1rem;
+    }
+}
+
+/* Custom Animations & Effects */
+@keyframes snakeGlow {
+    0% {
+        filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.3));
+    }
+    50% {
+        filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.5));
+    }
+    100% {
+        filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.3));
+    }
+}
+
+@keyframes foodPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes gridFade {
+    0% {
+        opacity: 0.05;
+    }
+    50% {
+        opacity: 0.1;
+    }
+    100% {
+        opacity: 0.05;
+    }
+}
